@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WEB1 - JavaScript</title>
+        <meta charset="utf-8" />
+    </head>
+    <body>
+        <h1>예약</h1>
+        <br />
+        <!-- action이 수신파일 설정 -->
+        <form action="/process/booking" method="post">
+            <table>
+                <tr>
+                    <td><input type="date" id="date" name="date" /></td>
+                </tr>
+                <tr>
+                    <td><input type="time" id="time" name="time" /></td>
+                </tr>
+                <tr>
+                    <label for="">예약 정보</label>
+                    <td><input type="text" id="B_name" name="B_name" placeholder="예약자 성함을 입력해주세요." /></td>
+                </tr>
+            </table>
+            <!-- submit -->
+            <input type="submit" , value="예약하기" />
+            <input type="submit" , value="취소하기" />
+        </form>
+    </body>
+</html>
