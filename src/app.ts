@@ -7,7 +7,9 @@ const mysql = require("mysql");
 // const dbconfig = require("../config/database.js");
 // const connection = mysql.createConnection(dbconfig);
 const dbconfig = require("../config/database.json");
-// const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
+
+const SECRET_KEY = "AIS123456"; // 비밀 키 (보안을 위해 환경 변수 등을 사용하는 것이 좋음)
 
 const app = express();
 const pool = mysql.createPool({
@@ -56,8 +58,22 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/public", express.static(path.join(__dirname + "/template/public")));
 
-//jwt secret key
-// const SECRET_KEY = "abcdefg";
+// function verifyToken(req, res, next) {
+//     const token = req.headers.authorization;
+
+//     if (!token) {
+//         return res.status(403).json({ message: "Token required" });
+//     }
+
+//     jwt.verify(token, SECRET_KEY, (err, user) => {
+//         if (err) {
+//             return res.status(401).json({ message: "Invalid token" });
+//         }
+
+//         req.user = user;
+//         next();
+//     });
+// }
 
 //----------------------------------------------------------------
 
@@ -119,6 +135,7 @@ app.post("/process/adduser", (req, res) => {
                 }
             }
         );
+        //console.log("Received token:", token);
     });
 });
 
@@ -126,6 +143,9 @@ app.post("/process/adduser", (req, res) => {
 
 //데이터베이스 read(로그인)
 app.post("/process/signin", (req, res) => {
+    // const user = { id: 123, username: "SHIN" };
+    // const token = jwt.sign(user, SECRET_KEY, { expiresIn: "1h" });
+    // console.log("로그인 포스트 메소드에서 토큰 생성:", token);
     const paramId = req.body.id;
     const paramPassword = req.body.password;
 
@@ -179,6 +199,7 @@ app.post("/process/signin", (req, res) => {
                     // res.writeHead("200", { "Content-Type": "text/html; charset=utf8" });
                     // res.write("<h2> 로그인 성공 </h2> ");
                     res.sendFile(__dirname + "/template/public/signInsuccess.html");
+                    // res.json({ token: token });
                     // res.end();
                     return;
                 }
@@ -205,7 +226,14 @@ app.get("/", (req, res) => {
 });
 app.get("/login", (req, res) => {
     console.log("/login에서 요청");
+
     res.sendFile(__dirname + "/template/public/signIn.html");
+});
+
+app.get("/get-token", (req, res) => {
+    const user = { id: 123, username: "SHIN" };
+    const token = jwt.sign(user, SECRET_KEY, { expiresIn: "1h" });
+    res.json({ token: token });
 });
 
 app.get("/booking", (req, res) => {
